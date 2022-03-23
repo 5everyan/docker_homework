@@ -1,0 +1,62 @@
+version: '3'
+
+services:
+  frontend:
+    restart: always
+    build: ./frontend
+    ports:
+      - 3000:3000
+    healthcheck:
+      test: curl --fail http://localhost:3000 || exit 1
+      interval: 60s
+      timeout: 10s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - api
+    networks:
+      - front-api
+
+  api:
+    restart: always
+    build: ./lib_catalog
+    ports:
+      - 8000:8000
+    healthcheck:
+      test: curl -sS http://localhost:8000/admin/ || exit 1
+      interval: 60s
+      timeout: 10s
+      start_period: 20s
+      retries: 5
+    depends_on:
+      - db
+    networks:
+      - front-api
+      - api-db
+
+  db:
+    restart: always
+    image: postgres:13
+    container_name: database
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    environment:
+      POSTGRES_DB: "django"
+      POSTGRES_USER: "django"
+      POSTGRES_PASSWORD: "django"
+    networks:
+      - api-db
+    volumes:
+      - db_data:/var/lib/postgresql/data/
+
+volumes:
+  db_data:
+
+networks:
+  front-api:
+    driver: bridge
+  api-db:
+    driver: bridge
