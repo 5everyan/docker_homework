@@ -25,7 +25,7 @@ SECRET_KEY = 'unen%+=v7wr#d%&rz@u&1n)2h)128&j0y2w&bk73r=03h(+!df'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -137,6 +137,8 @@ REST_FRAMEWORK = {
 
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
+    "http://192.168.88.61:3000",
+    "http://192.168.88.61:8000",
 ]
 
 FIXTURES_DIRS = os.path.join(BASE_DIR, 'catalog/fixtures')
